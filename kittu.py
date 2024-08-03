@@ -7,8 +7,9 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-#import pyjokes
 import random
+import operator
+import urllib.parse
 
 
 def takeCommand():
@@ -22,6 +23,7 @@ def takeCommand():
 		try:
 			print("Recognizing")
 			Query = r.recognize_google(audio, language='en-in')
+			
 			print("sir you said.", Query)
 
 		except Exception as e:
@@ -82,17 +84,14 @@ def Take_query():
 		query = takeCommand().lower()
 
 		if "open youtube" in query:
-			speak("opening youtube")
-			webbrowser.open("www.youtube.com")
-			continue
-
-		if "joke" in query:
-			My_joke = pyjokes.get_joke(language="en", category="neutral")
-			print(My_joke)
-			speak(My_joke)
+			speak("sir what should i search in youtube")
+			query = takeCommand().lower()
+			query_url = urllib.parse.quote(query)
+			search_url = "https://www.youtube.com/results?search_query=" + query_url
+			webbrowser.open(search_url)
 			continue
 		
-		elif "google" in query:
+		elif "open google" in query:
 			speak("sir what should i search in google")
 			cm=takeCommand().lower()
 			webbrowser.open(f"{cm}")
@@ -102,13 +101,20 @@ def Take_query():
 			speak("opening twitter")
 			webbrowser.open("www.twitter.com")
 			continue
-		
+
+
+		elif 'search' in query:
+    			query = query.replace("search", "")
+    			query_url = urllib.parse.quote(query)
+    			search_url = "https://www.youtube.com/results?search_query=" + query_url
+    			webbrowser.open(search_url)
+
 		elif "gmail" in query:
 			speak("opening gmail")
 			webbrowser.open("https://mail.google.com/mail")
 			continue
 
-		elif "facebook" in query:
+		elif "open facebook" in query:
 			speak("opening facebook")
 			webbrowser.open("www.facebook.com")
 			continue
@@ -124,16 +130,41 @@ def Take_query():
 			os.startfile(np)
 			continue
 
-		elif "cmd" in query:
+		elif "open cmd" in query:
 			speak("opening Command Prompt")
 			np="C:\\Windows\\System32\\cmd.exe"
 			os.startfile(np)
 			continue
 
-		elif "photoshop" in query:
+		elif "close" and "cmd" in query:				
+				os.system("taskkill /im WindowsTerminal.exe")
+				speak("closing Command Prompt")
+				continue
+
+		elif "open photoshop" in query:
 			speak("opening photoshop")
 			ps="C:\\Program Files\\Adobe\\Adobe Photoshop 2022\\Photoshop.exe"
 			os.startfile(ps)
+			continue
+
+		elif "close" and "photoshop" in query:
+			os.system("taskkill /im Photoshop.exe")
+			speak("closing photoshop")
+			continue
+
+		elif "close" and "browser" in query:				
+				os.system("taskkill /im chrome.exe")
+				speak("closing google chrome")
+				continue
+
+		elif "close" and "chrome" in query:				
+				os.system("taskkill /im chrome.exe")
+				speak("closing google chrome")
+				continue
+
+		elif "results" in query:
+			webbrowser.open("https://www.pdilipvenkatesh.in/try/")
+			speak("opening GEC Results")
 			continue
 
 		elif "day" in query:
@@ -143,6 +174,47 @@ def Take_query():
 		elif "time" in query:
 			tellTime()
 			continue
+
+		elif "calculate" in query:
+
+				def get_operator_fn(op):
+					return {
+						'+': operator.add,
+						'-': operator.sub,
+						'x': operator.mul,
+						'/': operator.truediv,
+					}[op]
+
+				def eval_binary_expr(op1, oper, op2):
+					op1, op2 = int(op1), int(op2)
+					return get_operator_fn(oper)(op1, op2)
+
+				if "calculate" in query:
+					r = sr.Recognizer()
+					with sr.Microphone() as source:
+						speak("ready")
+						print("Listening...")
+						r.adjust_for_ambient_noise(source)
+						audio = r.listen(source)
+					my_string = r.recognize_google(audio)
+					print(my_string)
+					speak("your result is" )
+					speak(eval_binary_expr(*(my_string.split())))
+					print("your result is", eval_binary_expr(*(my_string.split())))
+
+
+
+		elif "shutdown" in query:
+    			os.system("shutdown /s /t 5")
+
+		elif "restart" in query:
+    			os.system("shutdown /r /t 5")
+		
+		elif "lock" in query:
+    			os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+
+
+
 		
 		elif "bye" in query:
 			speak("Bye sir. ")
@@ -162,7 +234,7 @@ def Take_query():
 				print("playing...",songs[n])
 				os.startfile(os.path.join(music_dir, songs[n]))
 		
-		elif "wikipedia" or "about" in query:
+		elif "wikipedia" in query:
 			speak("Checking the wikipedia ")
 			query = query.replace("wikipedia", "")
 			result = wikipedia.summary(query, sentences=2)
@@ -170,8 +242,25 @@ def Take_query():
 			print(result)
 			speak(result)
 			continue
-		
-		
+
+		elif "what" in query:	
+			speak("Checking the wikipedia ")
+			query = query.replace("wikipedia", "")
+			result = wikipedia.summary(query, sentences=2)
+			speak("According to wikipedia")
+			print(result)
+			speak(result)
+			continue
+
+		elif "who" in query:	
+			speak("Checking the wikipedia ")
+			query = query.replace("wikipedia", "")
+			result = wikipedia.summary(query, sentences=2)
+			speak("According to wikipedia")
+			print(result)
+			speak(result)
+			continue
+
 		elif "email" in query:
 			# create message object instance
 			msg = MIMEMultipart()
