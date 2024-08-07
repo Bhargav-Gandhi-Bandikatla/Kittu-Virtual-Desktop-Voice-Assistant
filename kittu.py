@@ -272,8 +272,8 @@ def Take_query():
 			# setup the parameters of the message
 			
 			password = "pssword"
-			msg['From'] = "bhargavgandhi71@gmail.com"
-			msg['To'] = "bhargavgandhi79@gmail.com"
+			msg['From'] = "sender mail"
+			msg['To'] = "receiver mail"
 			speak("tell me the subject")
 			msg['Subject'] = takeCommand()
 			
