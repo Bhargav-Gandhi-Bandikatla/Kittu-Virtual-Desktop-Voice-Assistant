@@ -271,7 +271,7 @@ def Take_query():
 			
 			# setup the parameters of the message
 			
-			password = "idzjdiuvdnnqhugi"
+			password = "pssword"
 			msg['From'] = "bhargavgandhi71@gmail.com"
 			msg['To'] = "bhargavgandhi79@gmail.com"
 			speak("tell me the subject")
